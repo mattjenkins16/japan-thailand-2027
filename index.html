@@ -269,6 +269,39 @@ body.dark .countdown-block .countdown-number { color: var(--sakura); }
   font-size: 13px;
   opacity: 0.65;
 }
+.countdown-units {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+.countdown-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 8px 4px 6px;
+}
+body.dark .countdown-unit {
+  background: rgba(232,160,191,0.08);
+}
+.countdown-unit-num {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6.5vw, 30px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+body.dark .countdown-unit-num { color: var(--sakura); }
+.countdown-unit-lbl {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-top: 5px;
+}
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -917,9 +950,14 @@ body.dark .leaflet-popup-content-wrapper, body.dark .leaflet-popup-tip { backgro
       <h1 class="hero-title">Japan &amp; Thailand<br>2027</h1>
       <p class="hero-subtitle">Sakura, Songkran &amp; Samui</p>
       <div class="countdown-block">
-        <div class="countdown-label">Days until departure</div>
-        <div class="countdown-number" id="countdown-num">—</div>
-        <div class="countdown-sub" id="countdown-sub">27 Mar 2027, 09:05 BST · BA0007</div>
+        <div class="countdown-label">Countdown to departure</div>
+        <div class="countdown-units" id="countdown-units">
+          <div class="countdown-unit"><div class="countdown-unit-num" id="cd-days">—</div><div class="countdown-unit-lbl">Days</div></div>
+          <div class="countdown-unit"><div class="countdown-unit-num" id="cd-hours">—</div><div class="countdown-unit-lbl">Hrs</div></div>
+          <div class="countdown-unit"><div class="countdown-unit-num" id="cd-mins">—</div><div class="countdown-unit-lbl">Min</div></div>
+          <div class="countdown-unit"><div class="countdown-unit-num" id="cd-secs">—</div><div class="countdown-unit-lbl">Sec</div></div>
+        </div>
+        <div class="countdown-sub" id="countdown-sub" style="margin-top:10px;">27 Mar 2027, 09:05 BST · London Heathrow → Tokyo Haneda</div>
       </div>
       <div class="stats-row">
         <div class="stat-card">
@@ -1240,22 +1278,30 @@ function updateCountdown() {
   const departure = new Date('2027-03-27T09:05:00+01:00'); // BST = UTC+1
   const now = new Date();
   const diff = departure - now;
-  const el = $('#countdown-num');
+  const dEl = $('#cd-days');
+  const hEl = $('#cd-hours');
+  const mEl = $('#cd-mins');
+  const sEl = $('#cd-secs');
   const sub = $('#countdown-sub');
-  if (!el) return;
+  const units = $('#countdown-units');
+  if (!dEl) return;
   if (diff <= 0) {
-    el.textContent = 'En route!';
-    sub.textContent = 'Trip is underway';
-  } else {
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
-    el.textContent = days.toLocaleString();
-    sub.textContent = `days · ${hours}h ${mins}m remaining · BA0007`;
+    if (units) units.style.display = 'none';
+    if (sub) sub.textContent = 'Trip is underway — en route!';
+    return;
   }
+  const pad = n => String(n).padStart(2, '0');
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+  dEl.textContent = days.toLocaleString();
+  hEl.textContent = pad(hours);
+  mEl.textContent = pad(mins);
+  sEl.textContent = pad(secs);
 }
 updateCountdown();
-setInterval(updateCountdown, 60000);
+setInterval(updateCountdown, 1000);
 
 // ==================== TODAY CARD ====================
 function buildTodayCard() {
