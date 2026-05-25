@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="J & T 2027">
+<meta name="theme-color" content="#FBF7F4">
+<title>Japan & Thailand 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+/* ---- DESIGN TOKENS ---- */
+:root {
+  --bg: #FBF7F4;
+  --bg2: #F5EFE9;
+  --ink: #1A1614;
+  --ink2: #4A3F3A;
+  --ink3: #8A7A74;
+  --sakura: #E8A0BF;
+  --sakura-dark: #C97096;
+  --sage: #7A8B7F;
+  --gold: #C9A961;
+  --line: #E8DFD8;
+  --green: #4A7C59;
+  --red: #B84040;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 12px rgba(26,22,20,0.07);
+  --shadow-lg: 0 8px 32px rgba(26,22,20,0.10);
+  --nav-height: 64px;
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark mode */
+body.dark {
+  --bg: #18130F;
+  --bg2: #221B16;
+  --ink: #F0E8E0;
+  --ink2: #C8B8A8;
+  --ink3: #786860;
+  --line: #332820;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ---- RESET ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ---- TOP BAR ---- */
+#topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: 56px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  transition: background var(--transition);
+}
+#topbar-logo {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  flex: 1;
+  letter-spacing: -0.01em;
+}
+#topbar-logo span { color: var(--sakura); }
+#dark-toggle {
+  width: 36px; height: 36px;
+  border: none; background: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3);
+  font-size: 18px;
+  border-radius: 50%;
+  transition: background var(--transition);
+}
+#dark-toggle:hover { background: var(--line); }
+
+/* Desktop top nav */
+#desktop-nav {
+  display: none;
+  align-items: center;
+  gap: 2px;
+}
+#desktop-nav button {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink3);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+#desktop-nav button.active { color: var(--ink); background: var(--line); }
+#desktop-nav button:hover { color: var(--ink); background: var(--bg2); }
+
+@media (min-width: 768px) {
+  #desktop-nav { display: flex; }
+}
+
+/* ---- MAIN CONTENT ---- */
+#app {
+  padding-top: 56px;
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+  max-width: 680px;
+  margin: 0 auto;
+}
+@media (min-width: 768px) {
+  #app { padding-bottom: 32px; }
+}
+
+/* ---- BOTTOM NAV ---- */
+#bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  transition: background var(--transition);
+}
+@media (min-width: 768px) { #bottom-nav { display: none; } }
+
+.nav-btn {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+  height: var(--nav-height);
+  background: none; border: none;
+  cursor: pointer;
+  color: var(--ink3);
+  transition: color var(--transition);
+  padding: 8px 4px;
+}
+.nav-btn.active { color: var(--sakura-dark); }
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-btn span { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+
+/* ---- TABS / PAGES ---- */
+.tab-page {
+  display: none;
+  animation: fadeIn 0.18s ease;
+}
+.tab-page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---- SECTION PADDING ---- */
+.page-content { padding: 24px 16px; }
+@media (min-width: 480px) { .page-content { padding: 28px 24px; } }
+
+/* ---- TYPOGRAPHY ---- */
+.display-heading {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+}
+.card {
+  background: var(--bg2);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  transition: background var(--transition);
+}
+.card + .card { margin-top: 10px; }
+
+/* ---- HOME PAGE ---- */
+#hero {
+  padding: 28px 16px 20px;
+}
+@media (min-width: 480px) { #hero { padding: 32px 24px 24px; } }
+.hero-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sakura-dark);
+  margin-bottom: 10px;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 7vw, 40px);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.hero-subtitle {
+  font-size: 15px;
+  color: var(--ink3);
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.countdown-block {
+  background: var(--ink);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  color: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+body.dark .countdown-block {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.countdown-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.countdown-number {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 10vw, 52px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+body.dark .countdown-block .countdown-number { color: var(--sakura); }
+.countdown-sub {
+  font-size: 13px;
+  opacity: 0.65;
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.stat-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.stat-lbl { font-size: 11px; color: var(--ink3); }
+.today-section { padding: 0 16px 24px; }
+@media (min-width: 480px) { .today-section { padding: 0 24px 28px; } }
+.today-card {
+  background: var(--bg2);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.today-header {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.today-city-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.today-events { padding: 4px 0; }
+.today-event {
+  padding: 10px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.today-event + .today-event { border-top: 1px solid var(--line); }
+.event-time {
+  font-size: 12px;
+  color: var(--ink3);
+  min-width: 42px;
+  padding-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+.event-icon { font-size: 16px; min-width: 20px; }
+.event-body { flex: 1; }
+.event-title { font-size: 14px; font-weight: 500; line-height: 1.3; }
+.event-detail { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+
+/* ---- ITINERARY ---- */
+.day-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--bg2);
+  box-shadow: var(--shadow);
+  margin-bottom: 10px;
+  transition: box-shadow var(--transition);
+}
+.day-card-header {
+  padding: 14px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.day-card-header:active { background: var(--line); }
+.day-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--ink3);
+  min-width: 28px;
+  font-style: italic;
+  flex-shrink: 0;
+}
+.day-icon { font-size: 20px; flex-shrink: 0; }
+.day-info { flex: 1; }
+.day-location {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.day-summary { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+.day-date-label { font-size: 11px; color: var(--ink3); min-width: 50px; text-align: right; padding-top: 2px; flex-shrink: 0; }
+.day-chevron {
+  color: var(--ink3);
+  font-size: 14px;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.day-card.open .day-chevron { transform: rotate(180deg); }
+.day-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.day-card.open .day-body { max-height: 1200px; }
+.day-events-inner {
+  border-top: 1px solid var(--line);
+  padding: 4px 0;
+}
+.bloom-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: rgba(232,160,191,0.18);
+  color: var(--sakura-dark);
+  white-space: nowrap;
+}
+.day-card.today-active { border-color: var(--sakura); }
+.day-card.today-active .day-card-header { background: rgba(232,160,191,0.06); }
+
+/* City colors */
+.city-tokyo .day-num { color: var(--sakura); }
+.city-kyoto .day-num { color: var(--sakura-dark); }
+.city-fuji .day-num { color: var(--sage); }
+.city-osaka .day-num { color: var(--gold); }
+.city-samui .day-num, .city-bangkok .day-num { color: var(--gold); }
+
+/* ---- BOOKINGS ---- */
+.category-section { margin-bottom: 24px; }
+.booking-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.booking-header {
+  padding: 14px 16px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.booking-icon { font-size: 22px; flex-shrink: 0; }
+.booking-body { flex: 1; }
+.booking-name { font-size: 15px; font-weight: 500; line-height: 1.25; }
+.booking-name-link { display: inline-flex; align-items: baseline; gap: 4px; color: var(--ink); text-decoration: none; transition: color .15s ease; cursor: pointer; }
+.booking-name-link:hover { color: var(--sakura-dark); }
+.booking-name-link:active { color: var(--sakura-dark); }
+.booking-ext { font-size: 11px; color: var(--ink3); transition: transform .15s ease; }
+.booking-name-link:hover .booking-ext { transform: translate(2px, -2px); color: var(--sakura-dark); }
+.booking-detail { font-size: 12px; color: var(--ink3); margin-top: 3px; }
+.booking-legs { margin: 0 14px 12px; padding: 12px 14px; background: var(--bg); border-radius: 10px; border: 1px solid var(--line); }
+.flight-leg { display: flex; gap: 12px; }
+.flight-leg + .flight-leg { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.leg-rail { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sakura); border: 2px solid var(--bg2); box-shadow: 0 0 0 1px var(--sakura); }
+.leg-line { width: 2px; flex: 1; min-height: 22px; background: var(--sakura); opacity: .5; margin: 3px 0; }
+.leg-dot.end { background: var(--sakura-dark); box-shadow: 0 0 0 1px var(--sakura-dark); }
+.leg-content { flex: 1; min-width: 0; }
+.leg-flight-no { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--sakura-dark); margin-bottom: 6px; }
+.leg-row { display: flex; gap: 10px; align-items: baseline; font-size: 13px; }
+.leg-row + .leg-row { margin-top: 5px; }
+.leg-time { font-family: var(--font-display); font-size: 14px; font-weight: 500; color: var(--ink); flex-shrink: 0; white-space: nowrap; }
+.leg-place { color: var(--ink2); line-height: 1.3; }
+.leg-meta { font-size: 11px; color: var(--ink3); margin-top: 7px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.leg-meta-pill { display: inline-flex; align-items: center; gap: 4px; }
+.flight-layover { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--ink3); font-style: italic; padding: 8px 0 8px 21px; position: relative; }
+.flight-layover::before { content: '⋮'; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); color: var(--sakura); font-weight: 700; font-size: 14px; line-height: 1; letter-spacing: 2px; }
+.booking-cost {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+.booking-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.booking-via { font-size: 11px; color: var(--ink3); }
+.booking-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
+  background: var(--line);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  border: none;
+  color: var(--ink);
+  transition: background var(--transition);
+  margin-left: auto;
+}
+.booking-ref:hover { background: var(--sakura); color: white; }
+.total-bar {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+body.dark .total-bar {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.total-bar-label { font-size: 13px; opacity: 0.7; }
+.total-bar-amount {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 300;
+}
+body.dark .total-bar .total-bar-amount { color: var(--gold); }
+
+/* ---- COSTS ---- */
+.cost-hero {
+  text-align: center;
+  padding: 28px 16px 20px;
+}
+.cost-total {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 12vw, 60px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.cost-subtitle { font-size: 13px; color: var(--ink3); }
+.donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+@media (min-width: 400px) {
+  .donut-wrap { flex-direction: row; justify-content: center; }
+}
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.legend-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink2);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cost-list { margin-top: 4px; }
+.cost-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 10px;
+}
+.cost-item:last-child { border-bottom: none; }
+.cost-bar-bg {
+  flex: 1;
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.cost-bar-fill { height: 100%; border-radius: 2px; }
+.cost-name { font-size: 14px; flex: 0 0 auto; max-width: 55%; }
+.cost-amount {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 400;
+  min-width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.per-night-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* ---- PHRASES ---- */
+.phrase-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+}
+.phrase-tabs::-webkit-scrollbar { display: none; }
+.phrase-tab {
+  flex-shrink: 0;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink3);
+  transition: all var(--transition);
+}
+.phrase-tab.active {
+  background: var(--sakura);
+  border-color: var(--sakura);
+  color: white;
+}
+.phrase-panel { display: none; }
+.phrase-panel.active { display: block; }
+.phrase-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.phrase-card:hover, .phrase-card.highlighted {
+  border-color: var(--sakura);
+  background: rgba(232,160,191,0.08);
+}
+.phrase-main { flex: 1 }
+.phrase-en { font-size: 13px; color: var(--ink3); margin-bottom: 4px; }
+.phrase-jp {
+  font-size: 26px;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.phrase-phon { font-size: 13px; color: var(--ink3); font-style: italic; }
+.speak-btn {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  color: var(--ink3);
+  flex-shrink: 0;
+  transition: all var(--transition);
+}
+.speak-btn:hover { border-color: var(--sakura); color: var(--sakura-dark); }
+
+/* ---- TIPS ---- */
+.tips-section { margin-bottom: 24px; }
+.etiquette-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.etiquette-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.etiquette-body { font-size: 13px; color: var(--ink2); line-height: 1.5; }
+.jr-col { margin-bottom: 12px; }
+.jr-col-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.jr-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.45;
+  margin-bottom: 6px;
+}
+.jr-item::before {
+  content: '✓';
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.jr-col.not .jr-item::before { content: '✕'; }
+.jr-col.ok .jr-item::before { color: var(--green); }
+.jr-col.not .jr-item::before { color: var(--red); }
+.jr-tip {
+  background: rgba(201,169,97,0.12);
+  border: 1px solid rgba(201,169,97,0.3);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.fact-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 18px;
+  min-height: 120px;
+  transition: all var(--transition);
+}
+.fact-category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--sakura-dark);
+  margin-bottom: 10px;
+}
+.fact-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.fact-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.fact-btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+body.dark .fact-btn { background: var(--sakura); color: white; }
+.fact-btn:hover { opacity: 0.8; }
+.fact-counter { font-size: 12px; color: var(--ink3); margin-top: 8px; text-align: center; }
+
+/* ---- PACKING ---- */
+.packing-section { margin-bottom: 20px; }
+.packing-cat-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 8px;
+}
+.pack-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.pack-item.checked {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+.pack-checkbox {
+  width: 20px; height: 20px;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  transition: all var(--transition);
+}
+.pack-item.checked .pack-checkbox {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: white;
+}
+.pack-label { font-size: 14px; color: var(--ink); }
+.progress-bar-wrap {
+  background: var(--line);
+  border-radius: 4px;
+  height: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.progress-label {
+  font-size: 13px;
+  color: var(--ink3);
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---- REMINDERS ---- */
+.reminder-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+}
+.reminder-days {
+  min-width: 48px;
+  text-align: center;
+}
+.reminder-days-num {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--sakura-dark);
+}
+.reminder-days-lbl { font-size: 10px; color: var(--ink3); }
+.reminder-body { flex: 1; }
+.reminder-date { font-size: 11px; color: var(--ink3); margin-bottom: 3px; }
+.reminder-title { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
+.reminder-detail { font-size: 13px; color: var(--ink2); line-height: 1.45; }
+
+/* ---- TOAST ---- */
+#toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 24px;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+}
+#toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (min-width: 768px) { #toast { bottom: 24px; } }
+
+/* ---- DIVIDER ---- */
+.divider { border: none; border-top: 1px solid var(--line); margin: 20px 0; }
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+/* MAP TAB */
+#tab-map .page-content { padding: 0; }
+.map-header { padding: 24px 16px 12px; }
+@media (min-width: 480px) { .map-header { padding: 28px 24px 12px; } }
+#map { width: 100%; height: 60vh; min-height: 420px; max-height: 600px; background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+body.dark #map { background: #0F0D0B; }
+.map-legend { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px; }
+@media (min-width: 480px) { .map-legend { padding: 20px 24px; } }
+.map-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink2); }
+.map-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.map-stops { padding: 0 16px 24px; }
+@media (min-width: 480px) { .map-stops { padding: 0 24px 32px; } }
+.map-stop { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--bg2); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; cursor: pointer; transition: all .15s ease; }
+.map-stop:hover { transform: translateY(-1px); border-color: var(--sakura); }
+.map-stop-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: white; font-weight: 600; font-family: var(--font-display); font-size: 14px; }
+.map-stop-body { flex: 1; min-width: 0; }
+.map-stop-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.map-stop-meta { font-size: 12px; color: var(--ink3); margin-top: 2px; }
+.map-stop-nights { font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--ink2); }
+/* Custom Leaflet marker */
+.trip-marker { background: none !important; border: none !important; }
+.trip-marker-pin { width: 32px; height: 32px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.25); border: 2px solid white; }
+.trip-marker-pin span { transform: rotate(45deg); color: white; font-weight: 600; font-family: var(--font-display); font-size: 13px; }
+.leaflet-popup-content-wrapper { border-radius: 12px; font-family: var(--font-body); }
+.leaflet-popup-content { margin: 12px 14px; font-size: 13px; }
+.leaflet-popup-content strong { font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--ink); }
+.leaflet-popup-tip { box-shadow: none; }
+body.dark .leaflet-popup-content-wrapper, body.dark .leaflet-popup-tip { background: var(--bg2); color: var(--ink); }
+.leaflet-container { font-family: var(--font-body); }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header id="topbar">
+  <div id="topbar-logo">🌸 <span>Japan</span> & Thailand</div>
+  <nav id="desktop-nav">
+    <button class="active" data-tab="home">Overview</button>
+    <button data-tab="itinerary">Itinerary</button>
+    <button data-tab="map">Map</button>
+    <button data-tab="bookings">Bookings</button>
+    <button data-tab="costs">Costs</button>
+    <button data-tab="phrases">Phrases</button>
+    <button data-tab="tips">Tips</button>
+    <button data-tab="packing">Packing</button>
+    <button data-tab="reminders">Reminders</button>
+  </nav>
+  <button id="dark-toggle" aria-label="Toggle dark mode">☀️</button>
+</header>
+
+<!-- MAIN APP -->
+<main id="app">
+
+  <!-- HOME -->
+  <div class="tab-page active" id="tab-home">
+    <div id="hero">
+      <div class="hero-kicker">Matt &amp; Ellen · 2027</div>
+      <h1 class="hero-title">Japan &amp; Thailand<br>2027</h1>
+      <p class="hero-subtitle">Sakura, Songkran &amp; Samui</p>
+      <div class="countdown-block">
+        <div class="countdown-label">Days until departure</div>
+        <div class="countdown-number" id="countdown-num">—</div>
+        <div class="countdown-sub" id="countdown-sub">27 Mar 2027, 09:05 BST · BA0007</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val">20</div>
+          <div class="stat-lbl">Days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">5</div>
+          <div class="stat-lbl">Cities</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">11</div>
+          <div class="stat-lbl">Bookings</div>
+        </div>
+      </div>
+    </div>
+    <div class="today-section">
+      <div class="section-label">What's Happening Today</div>
+      <div class="today-card" id="today-card"></div>
+    </div>
+  </div>
+
+  <!-- ITINERARY -->
+  <div class="tab-page" id="tab-itinerary">
+    <div class="page-content">
+      <div class="section-label">Full Itinerary · 20 Days</div>
+      <div id="itinerary-list"></div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="tab-page" id="tab-map">
+    <div class="map-header">
+      <div class="section-label">Trip Map</div>
+      <p style="font-size:13px;color:var(--ink3);margin-top:4px;line-height:1.5">Tap a stop on the map or in the list below to fly to it.</p>
+    </div>
+    <div id="map"></div>
+    <div class="map-legend">
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#E8A0BF"></span>Tokyo</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#7A8B7F"></span>Fuji</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#C97096"></span>Kyoto</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#C9A961"></span>Osaka</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#5BA3C7"></span>Samui</span>
+      <span class="map-legend-item"><span class="map-legend-dot" style="background:#D4854A"></span>Bangkok</span>
+    </div>
+    <div class="map-stops" id="map-stops"></div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div class="tab-page" id="tab-bookings">
+    <div class="page-content">
+      <div class="section-label">Flights</div>
+      <div id="bookings-flights"></div>
+      <hr class="divider">
+      <div class="section-label">Hotels</div>
+      <div id="bookings-hotels"></div>
+      <div class="total-bar">
+        <span class="total-bar-label">Total · 11 bookings</span>
+        <span class="total-bar-amount">£6,302.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COSTS -->
+  <div class="tab-page" id="tab-costs">
+    <div class="cost-hero">
+      <div class="section-label" style="text-align:center">Total Trip Cost</div>
+      <div class="cost-total">£6,302</div>
+      <div class="cost-subtitle">Matt &amp; Ellen · 20 days · 5 cities</div>
+    </div>
+    <div class="page-content" style="padding-top:0">
+      <div class="donut-wrap" id="donut-wrap"></div>
+      <div class="per-night-row">
+        <div class="stat-card">
+          <div class="stat-val">£315</div>
+          <div class="stat-lbl">Per night avg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">£3,151</div>
+          <div class="stat-lbl">Per person</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">11</div>
+          <div class="stat-lbl">Bookings</div>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="section-label">Line Items</div>
+      <div class="cost-list" id="cost-list"></div>
+    </div>
+  </div>
+
+  <!-- PHRASES -->
+  <div class="tab-page" id="tab-phrases">
+    <div class="page-content">
+      <div class="section-label">Japanese &amp; Thai Phrases</div>
+      <div class="phrase-tabs" id="phrase-tabs"></div>
+      <div id="phrase-panels"></div>
+    </div>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tab-page" id="tab-tips">
+    <div class="page-content">
+      <!-- Etiquette -->
+      <div class="tips-section">
+        <div class="section-label">Etiquette</div>
+        <div id="etiquette-list"></div>
+      </div>
+      <!-- JR Pass -->
+      <div class="tips-section">
+        <div class="section-label">JR Pass Guide</div>
+        <div class="card">
+          <div class="jr-col ok">
+            <div class="jr-col-title" style="color:var(--green)">Covered ✓</div>
+            <div id="jr-covered"></div>
+          </div>
+          <hr class="divider" style="margin:12px 0">
+          <div class="jr-col not">
+            <div class="jr-col-title" style="color:var(--red)">Not Covered ✕</div>
+            <div id="jr-not-covered"></div>
+          </div>
+          <div class="jr-tip" id="jr-tip"></div>
+        </div>
+      </div>
+      <!-- Facts -->
+      <div class="tips-section">
+        <div class="section-label">Did You Know</div>
+        <div class="fact-card" id="fact-card"></div>
+        <div class="fact-nav">
+          <button class="fact-btn" id="fact-next">Next fact →</button>
+        </div>
+        <div class="fact-counter" id="fact-counter"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKING -->
+  <div class="tab-page" id="tab-packing">
+    <div class="page-content">
+      <div class="section-label">Packing List</div>
+      <div id="progress-label" class="progress-label">
+        <span id="progress-text">0 / 0 packed</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar-wrap" style="margin-bottom:20px">
+        <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div id="packing-list"></div>
+    </div>
+  </div>
+
+  <!-- REMINDERS -->
+  <div class="tab-page" id="tab-reminders">
+    <div class="page-content">
+      <div class="section-label">Upcoming Reminders</div>
+      <div id="reminders-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav id="bottom-nav">
+  <button class="nav-btn active" data-tab="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" data-tab="itinerary">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span>Itinerary</span>
+  </button>
+  <button class="nav-btn" data-tab="map">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+    <span>Map</span>
+  </button>
+  <button class="nav-btn" data-tab="bookings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+    <span>Bookings</span>
+  </button>
+  <button class="nav-btn" data-tab="phrases">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <span>Phrases</span>
+  </button>
+  <button class="nav-btn" data-tab="tips">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span>Tips</span>
+  </button>
+  <button class="nav-btn" data-tab="packing">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+    <span>Packing</span>
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div id="toast">Copied!</div>
+
+<script type="module">
+
+// ==================== DATA ====================
+const TRIP_DATA = {"trip":{"title":"Japan & Thailand 2027","subtitle":"Sakura, Songkran & Samui","travellers":[{"name":"Matthew Jenkins","dob":"1981-05-16"},{"name":"Ellen Cusiter","dob":"1995-01-06"}],"ba_exec_club":"19417155","totalCostGBP":6302,"exchangeRates":{"GBP_JPY":211.4,"GBP_THB":45}},"days":[{"id":1,"date":"2027-03-27","dateLabel":"Sat 27 Mar","location":"London → Tokyo","city":"transit","icon":"plane","summary":"Overnight BA flight to Haneda","events":[{"time":"09:05","type":"flight","title":"BA0007 LHR T5 → HND T3","detail":"Club World · Ref Z7NDBU","icon":"plane"},{"time":"+1 07:35","type":"arrive","title":"Arrive Haneda","detail":"Take Tokyo Monorail or Keikyu Line to Park Hotel","icon":"train"}]},{"id":2,"date":"2027-03-28","dateLabel":"Sun 28 Mar","location":"Tokyo · Day 1","city":"tokyo","icon":"sakura","summary":"Arrive & settle in Shiodome","events":[{"time":"07:35","type":"arrive","title":"Land at Haneda T3","detail":"Approx 20 min to hotel"},{"time":"10:00","type":"hotel","title":"Check in: Park Hotel Tokyo","detail":"Artist Queen Room · 25th floor atrium"},{"time":"13:00","type":"activity","title":"Hama-rikyu Gardens","detail":"Walking distance · early sakura + tea house"},{"time":"18:00","type":"food","title":"Sushi dinner in Tsukiji","detail":"Easy first-night meal"}]},{"id":3,"date":"2027-03-29","dateLabel":"Mon 29 Mar","location":"Tokyo · Day 2","city":"tokyo","icon":"sakura","summary":"Meguro River & Shibuya","events":[{"time":"06:30","type":"hanami","title":"Meguro River hanami","detail":"Get there early — 800 trees over 4km, peak bloom window"},{"time":"11:00","type":"activity","title":"Shibuya Crossing & Hachiko"},{"time":"14:00","type":"activity","title":"Harajuku & Omotesando"},{"time":"19:00","type":"food","title":"Izakaya in Ebisu"}]},{"id":4,"date":"2027-03-30","dateLabel":"Tue 30 Mar","location":"Tokyo · Day 3","city":"tokyo","icon":"ghibli","summary":"Ghibli Museum & Inokashira","events":[{"time":"10:00","type":"activity","title":"Ghibli Museum, Mitaka","detail":"Pre-booked timed entry · ¥1,000pp · book on 10 Feb 2027"},{"time":"13:00","type":"hanami","title":"Inokashira Park hanami","detail":"Boat under cherry blossoms · adjacent to Ghibli"},{"time":"17:00","type":"activity","title":"Kichijoji wandering","detail":"Local shopping streets, Harmonica Yokocho"},{"time":"19:30","type":"food","title":"Dinner in Kichijoji"}]},{"id":5,"date":"2027-03-31","dateLabel":"Wed 31 Mar","location":"Tokyo · Day 4","city":"tokyo","icon":"sakura","summary":"Ueno, Asakusa & Skytree","events":[{"time":"08:00","type":"hanami","title":"Ueno Park","detail":"1,000+ trees · iconic hanami spot · arrive early"},{"time":"11:30","type":"activity","title":"Senso-ji Temple, Asakusa"},{"time":"14:00","type":"activity","title":"Tokyo Skytree","detail":"Views over the city"},{"time":"18:30","type":"food","title":"Tonkatsu or yakitori dinner"}]},{"id":6,"date":"2027-04-01","dateLabel":"Thu 1 Apr","location":"Tokyo → Kawaguchiko","city":"fuji","icon":"mountain","summary":"Activate JR Pass · head to Mt Fuji","events":[{"time":"08:00","type":"transit","title":"Activate 7-day JR Pass","detail":"At Tokyo Station JR office"},{"time":"09:30","type":"train","title":"Shinjuku → Otsuki (JR Chuo)","detail":"Covered by JR Pass"},{"time":"11:00","type":"train","title":"Otsuki → Kawaguchiko (Fujikyu)","detail":"NOT covered · ~£5.50pp each way"},{"time":"13:00","type":"hotel","title":"Check in: Fuji View Hotel","detail":"Lakeside · Mt Fuji views"},{"time":"15:00","type":"activity","title":"Chureito Pagoda","detail":"Iconic pagoda + Fuji + sakura shot"},{"time":"19:00","type":"food","title":"Hoto noodles at hotel"}]},{"id":7,"date":"2027-04-02","dateLabel":"Fri 2 Apr","location":"Kawaguchiko","city":"fuji","icon":"mountain","summary":"Lake circuit & onsen","events":[{"time":"06:30","type":"activity","title":"Sunrise Fuji from lakeside","detail":"Clearest views before 9am"},{"time":"10:00","type":"activity","title":"Kachi Kachi Ropeway"},{"time":"13:00","type":"activity","title":"Oishi Park","detail":"North shore · best Fuji + flower combo"},{"time":"16:00","type":"activity","title":"Onsen at hotel"},{"time":"19:00","type":"food","title":"Kaiseki dinner at Fuji View"}]},{"id":8,"date":"2027-04-03","dateLabel":"Sat 3 Apr","location":"Kawaguchiko → Kyoto","city":"kyoto","icon":"torii","summary":"Shinkansen south to Kyoto","events":[{"time":"09:00","type":"train","title":"Kawaguchiko → Otsuki (Fujikyu)"},{"time":"10:30","type":"train","title":"Otsuki → Shin-Yokohama (Chuo)"},{"time":"12:00","type":"train","title":"Shin-Yokohama → Kyoto (Hikari)","detail":"Use Hikari not Nozomi — JR Pass valid"},{"time":"14:30","type":"hotel","title":"Check in: RC Hotel Kyoto","detail":"Ref CZMEiA4TDT"},{"time":"16:00","type":"hanami","title":"Philosopher's Path","detail":"Canal lined with cherry trees"},{"time":"19:00","type":"food","title":"Gion dinner"}]},{"id":9,"date":"2027-04-04","dateLabel":"Sun 4 Apr","location":"Kyoto · Day 2","city":"kyoto","icon":"torii","summary":"Arashiyama & Fushimi Inari","events":[{"time":"07:00","type":"activity","title":"Arashiyama Bamboo Grove","detail":"Get there before 8 to avoid crowds"},{"time":"09:00","type":"activity","title":"Tenryu-ji Temple"},{"time":"11:00","type":"activity","title":"Togetsukyo Bridge & sakura"},{"time":"15:00","type":"activity","title":"Fushimi Inari Shrine","detail":"Late afternoon = fewer crowds · climb to Yotsutsuji viewpoint"},{"time":"19:30","type":"food","title":"Pontocho Alley dinner"}]},{"id":10,"date":"2027-04-05","dateLabel":"Mon 5 Apr","location":"Kyoto · Day 3","city":"kyoto","icon":"torii","summary":"Kinkaku-ji & Higashiyama","events":[{"time":"08:30","type":"activity","title":"Kinkaku-ji Golden Pavilion"},{"time":"11:00","type":"activity","title":"Ryoan-ji rock garden"},{"time":"14:00","type":"activity","title":"Higashiyama district","detail":"Sannenzaka, Ninenzaka, Kiyomizu-dera"},{"time":"17:00","type":"hanami","title":"Maruyama Park","detail":"Famous weeping cherry tree, illuminated at night"},{"time":"19:30","type":"food","title":"Kaiseki dinner"}]},{"id":11,"date":"2027-04-06","dateLabel":"Tue 6 Apr","location":"Kyoto → Osaka","city":"osaka","icon":"food","summary":"Short hop · Centara Miyabi check-in","events":[{"time":"10:00","type":"activity","title":"Nijo Castle, Kyoto","detail":"Final morning before checkout"},{"time":"13:00","type":"train","title":"Kyoto → Osaka (JR)","detail":"15 min · covered by JR Pass"},{"time":"14:00","type":"hotel","title":"Check in: Centara Grand Osaka","detail":"Miyabi Floor · lounge access · breakfast · afternoon tea · evening cocktails"},{"time":"16:00","type":"activity","title":"Afternoon tea at Miyabi Lounge"},{"time":"18:00","type":"activity","title":"Dotonbori at night","detail":"Glico sign, neon, street food"},{"time":"20:00","type":"food","title":"Cocktail hour at lounge (replaces dinner)"}]},{"id":12,"date":"2027-04-07","dateLabel":"Wed 7 Apr","location":"Osaka · Day 2","city":"osaka","icon":"food","summary":"Castle, Nara day trip option","events":[{"time":"09:00","type":"activity","title":"Osaka Castle & Nishinomaru Garden","detail":"600 cherry trees around castle"},{"time":"12:00","type":"food","title":"Kuromon Market lunch","detail":"Street food · fresh seafood"},{"time":"14:00","type":"activity","title":"Nara day trip (optional)","detail":"45 min by JR · feed the deer · Todai-ji"},{"time":"19:00","type":"food","title":"Okonomiyaki in Namba"}]},{"id":13,"date":"2027-04-08","dateLabel":"Thu 8 Apr","location":"Osaka · Day 3","city":"osaka","icon":"food","summary":"Slow day · Miyabi inclusions","events":[{"time":"10:00","type":"activity","title":"Umeda Sky Building","detail":"Floating Garden Observatory"},{"time":"13:00","type":"activity","title":"Shinsaibashi shopping"},{"time":"16:00","type":"activity","title":"Afternoon tea at lounge"},{"time":"19:00","type":"food","title":"Sushi or kushikatsu dinner"}]},{"id":14,"date":"2027-04-09","dateLabel":"Fri 9 Apr","location":"Osaka → Tokyo","city":"tokyo","icon":"plane","summary":"Final Japan day · positioning for flight","events":[{"time":"10:00","type":"train","title":"Shin-Osaka → Tokyo (Hikari)","detail":"JR Pass · arrive ~13:00 · expires today (last day of 7-day pass)"},{"time":"14:00","type":"hotel","title":"Check in: Grand Prince Hotel Takanawa","detail":"Close to Haneda · garden views"},{"time":"15:30","type":"activity","title":"Hotel garden hanami"},{"time":"18:00","type":"food","title":"Hotel dinner or one final Tokyo izakaya"}]},{"id":15,"date":"2027-04-10","dateLabel":"Sat 10 Apr","location":"Tokyo → Bangkok → Koh Samui","city":"transit","icon":"plane","summary":"Long travel day · land in paradise","events":[{"time":"07:30","type":"transit","title":"Taxi to Haneda"},{"time":"10:40","type":"flight","title":"PG4154 HND → BKK","detail":"Bangkok Airways · arrive 15:10"},{"time":"15:10","type":"arrive","title":"Transit at Suvarnabhumi","detail":"1h 30m connection · same ticket"},{"time":"16:40","type":"flight","title":"PG169 BKK → USM","detail":"Bangkok Airways · arrive ~18:00 Samui"},{"time":"18:30","type":"hotel","title":"Check in: Sala Samui Choengmon","detail":"10/9 Moo 5, Baan Plai Lam"},{"time":"20:00","type":"food","title":"Welcome dinner at resort"}]},{"id":16,"date":"2027-04-11","dateLabel":"Sun 11 Apr","location":"Koh Samui · Day 1","city":"samui","icon":"beach","summary":"Pure beach day · recovery","events":[{"time":"08:00","type":"food","title":"Breakfast at resort"},{"time":"10:00","type":"activity","title":"Beach + pool"},{"time":"13:00","type":"food","title":"Beachside Thai lunch"},{"time":"16:00","type":"activity","title":"Sunset cocktails"},{"time":"19:30","type":"food","title":"Dinner at Sala"}]},{"id":17,"date":"2027-04-12","dateLabel":"Mon 12 Apr","location":"Koh Samui · Day 2","city":"samui","icon":"beach","summary":"Island exploration","events":[{"time":"09:00","type":"activity","title":"Big Buddha & Wat Plai Laem"},{"time":"11:30","type":"activity","title":"Fisherman's Village, Bophut"},{"time":"14:00","type":"activity","title":"Beach time"},{"time":"17:00","type":"activity","title":"Spa at Sala"},{"time":"20:00","type":"food","title":"Beachfront seafood dinner"}]},{"id":18,"date":"2027-04-13","dateLabel":"Tue 13 Apr · Songkran","location":"Samui → Bangkok","city":"bangkok","icon":"songkran","summary":"Songkran begins · Thai New Year","events":[{"time":"08:00","type":"transit","title":"Check out · taxi to USM"},{"time":"10:05","type":"flight","title":"PG124 USM → BKK","detail":"Bangkok Airways · arrive 11:20 · Ref FR4CVO"},{"time":"13:00","type":"hotel","title":"Check in: Avani+ Riverside","detail":"Skyline River View Room · fully refundable until 11 Apr"},{"time":"15:00","type":"activity","title":"Songkran water festival","detail":"Khao San Road or Silom · expect to get soaked"},{"time":"19:00","type":"food","title":"SEEN Restaurant dinner","detail":"Book on 19 Oct 2026 (6 months in advance)"}]},{"id":19,"date":"2027-04-14","dateLabel":"Wed 14 Apr","location":"Bangkok → London","city":"transit","icon":"plane","summary":"Final day · evening flight home","events":[{"time":"09:00","type":"food","title":"Breakfast at Avani+"},{"time":"11:00","type":"activity","title":"Grand Palace or Wat Pho"},{"time":"14:00","type":"activity","title":"River boat to ICONSIAM"},{"time":"18:00","type":"transit","title":"Taxi to BKK Suvarnabhumi"},{"time":"22:35","type":"flight","title":"BA2230 BKK → LGW Gatwick","detail":"Club World · Ref ZBRFYU"}]},{"id":20,"date":"2027-04-15","dateLabel":"Thu 15 Apr","location":"Home","city":"transit","icon":"plane","summary":"Land at Gatwick","events":[{"time":"05:55","type":"arrive","title":"Land at LGW","detail":"Gatwick · not Heathrow"}]}],"bookings":[{"id":"ba0007","category":"flight","name":"London → Tokyo","detail":"BA0007 · Club World · 11h 30m","legs":[{"flight":"BA0007","from":"London Heathrow (LHR T5)","to":"Tokyo Haneda (HND T3)","depart":"Sat 27 Mar · 09:05","arrive":"Sun 28 Mar · 07:35","duration":"11h 30m","cabin":"Club World"}],"ref":"Z7NDBU","bookedVia":"BA direct","costGBP":599,"date":"2027-03-27"},{"id":"park-tokyo","category":"hotel","name":"Park Hotel Tokyo","detail":"Artist Queen Room · 4 nights · ¥236,196","ref":"6395013730 (PIN 6225)","bookedVia":"Booking.com","costGBP":1117.2,"date":"2027-03-28"},{"id":"fuji-view","category":"hotel","name":"Fuji View Hotel","detail":"2 nights · Kawaguchiko lakeside","ref":"662863215","bookedVia":"Agoda","costGBP":551,"date":"2027-04-01"},{"id":"rc-kyoto","category":"hotel","name":"RC Hotel Kyoto","detail":"3 nights","ref":"CZMEiA4TDT","bookedVia":"Hotel direct","costGBP":384,"date":"2027-04-03"},{"id":"centara-osaka","category":"hotel","name":"Centara Grand Osaka","detail":"Miyabi Floor · 3 nights · lounge, breakfast, afternoon tea, evening cocktails","ref":"72074756241535","bookedVia":"Hotels.com","costGBP":872,"date":"2027-04-06"},{"id":"grand-prince","category":"hotel","name":"Grand Prince Takanawa","detail":"1 night · final Tokyo night","ref":"72074750689591","bookedVia":"Hotels.com","costGBP":221,"date":"2027-04-09"},{"id":"pg-through","category":"flight","name":"Tokyo → Bangkok → Koh Samui","detail":"Bangkok Airways through-ticket · 2 legs · 7h 20m + 1h 30m layover","legs":[{"flight":"PG4154","from":"Tokyo Haneda (HND)","to":"Bangkok Suvarnabhumi (BKK)","depart":"Sat 10 Apr · 10:40","arrive":"Sat 10 Apr · 15:10","duration":"6h 30m","cabin":"Economy"},{"layover":"1h 30m layover at Bangkok (BKK) · same ticket"},{"flight":"PG169","from":"Bangkok Suvarnabhumi (BKK)","to":"Koh Samui (USM)","depart":"Sat 10 Apr · 16:40","arrive":"Sat 10 Apr · 18:00","duration":"1h 20m","cabin":"Economy"}],"ref":"—","bookedVia":"Booking.com (modified direct)","costGBP":1044,"date":"2027-04-10"},{"id":"sala-samui","category":"hotel","name":"Sala Samui Choengmon","detail":"3 nights · 10/9 Moo 5, Baan Plai Lam","ref":"72074201164908","bookedVia":"Hotels.com","costGBP":873,"date":"2027-04-10"},{"id":"pg124","category":"flight","name":"Koh Samui → Bangkok","detail":"PG124 · Bangkok Airways · 1h 15m","legs":[{"flight":"PG124","from":"Koh Samui (USM)","to":"Bangkok Suvarnabhumi (BKK)","depart":"Tue 13 Apr · 10:05","arrive":"Tue 13 Apr · 11:20","duration":"1h 15m","cabin":"Economy"}],"ref":"FR4CVO","bookedVia":"Booking.com","costGBP":145,"date":"2027-04-13"},{"id":"avani-bkk","category":"hotel","name":"Avani+ Riverside Bangkok","detail":"1 night · Skyline River View · refundable until 11 Apr","ref":"72074202492709","bookedVia":"Hotels.com","costGBP":160,"date":"2027-04-13"},{"id":"ba2230","category":"flight","name":"Bangkok → London Gatwick","detail":"BA2230 · Club World · 13h 20m","legs":[{"flight":"BA2230","from":"Bangkok Suvarnabhumi (BKK)","to":"London Gatwick (LGW)","depart":"Wed 14 Apr · 22:35","arrive":"Thu 15 Apr · 05:55","duration":"13h 20m","cabin":"Club World"}],"ref":"ZBRFYU","bookedVia":"BA direct","costGBP":335.8,"date":"2027-04-14"}],"phrases":[{"category":"Greetings","items":[{"en":"Hello","jp":"こんにちは","phon":"kon-nee-chee-wah"},{"en":"Good morning","jp":"おはようございます","phon":"oh-hai-yoh goh-zai-mass"},{"en":"Good evening","jp":"こんばんは","phon":"kon-bahn-wah"},{"en":"Goodbye","jp":"さようなら","phon":"sah-yoh-nah-rah"},{"en":"Thank you","jp":"ありがとうございます","phon":"ah-ree-gah-toh goh-zai-mass"},{"en":"Excuse me / Sorry","jp":"すみません","phon":"soo-mee-mah-sen"},{"en":"Please","jp":"お願いします","phon":"oh-neh-gai-shee-mass"}]},{"category":"Essentials","items":[{"en":"Yes","jp":"はい","phon":"hai"},{"en":"No","jp":"いいえ","phon":"ee-eh"},{"en":"I don't understand","jp":"わかりません","phon":"wah-kah-ree-mah-sen"},{"en":"Do you speak English?","jp":"英語を話せますか?","phon":"ay-goh oh hah-nah-seh-mass kah?"},{"en":"How much is it?","jp":"いくらですか?","phon":"ee-koo-rah dess kah?"},{"en":"Where is the toilet?","jp":"トイレはどこですか?","phon":"toy-reh wah doh-koh dess kah?"},{"en":"Help!","jp":"助けて!","phon":"tah-skeh-teh!"}]},{"category":"Restaurant","items":[{"en":"The menu, please","jp":"メニューをお願いします","phon":"menu oh oh-neh-gai-shee-mass"},{"en":"This, please","jp":"これをください","phon":"koh-reh oh koo-dah-sai"},{"en":"Delicious!","jp":"美味しい!","phon":"oh-ee-shee!"},{"en":"Cheers!","jp":"乾杯!","phon":"kahn-pai!"},{"en":"The bill, please","jp":"お会計お願いします","phon":"oh-kai-keh oh-neh-gai-shee-mass"},{"en":"I'm full","jp":"お腹いっぱい","phon":"oh-nah-kah ee-pai"}]},{"category":"Transport","items":[{"en":"Train station","jp":"駅","phon":"eh-kee"},{"en":"Where is...?","jp":"...はどこですか?","phon":"... wah doh-koh dess kah?"},{"en":"One ticket, please","jp":"切符を一枚ください","phon":"kee-poo oh ee-chee-mai koo-dah-sai"},{"en":"What time?","jp":"何時ですか?","phon":"nahn-jee dess kah?"},{"en":"Taxi","jp":"タクシー","phon":"tah-koo-shee"}]},{"category":"Songkran (Thai)","items":[{"en":"Hello","jp":"สวัสดี","phon":"sah-wah-dee krap (m) / kah (f)"},{"en":"Thank you","jp":"ขอบคุณ","phon":"kop-koon krap/kah"},{"en":"Happy New Year","jp":"สวัสดีปีใหม่","phon":"sah-wah-dee pee-mai"},{"en":"Delicious","jp":"อร่อย","phon":"ah-roy"},{"en":"How much?","jp":"เท่าไหร่","phon":"tao-rai"},{"en":"Water!","jp":"น้ำ","phon":"nam"}]}],"etiquette":[{"title":"Bow, don't shake","body":"A slight bow is the default greeting. Deeper bow = more respect. No hugging strangers."},{"title":"Shoes off indoors","body":"Remove shoes at any home, ryokan, temple interior, or restaurant with tatami. Look for a step-up or shoe rack."},{"title":"No tipping","body":"Tipping is not customary and can be considered rude. Service is included. Same in Bangkok upscale venues; in Thailand round up taxis."},{"title":"Quiet on trains","body":"Phones on silent. No calls. Talk softly. Priority seats — even if empty — leave for elderly/pregnant/disabled."},{"title":"Chopstick rules","body":"Never stick chopsticks upright in rice (funeral symbolism). Never pass food chopstick-to-chopstick. Use the rest provided."},{"title":"Cash still rules","body":"Many small restaurants, temples and shops are cash-only. Carry ¥10,000+ at all times. 7-Eleven ATMs accept foreign cards."},{"title":"Onsen etiquette","body":"Wash thoroughly before entering the bath. No swimsuits. No towels in the water (place on head). Tattoos may be restricted — check policy."},{"title":"Slurp your noodles","body":"Slurping ramen and soba is a compliment to the chef. Eat noodles hot and fast."},{"title":"Songkran in Thailand","body":"13–15 Apr is full-on water fighting. Protect your phone in a waterproof pouch. Locals love when foreigners join in — smile and get soaked."},{"title":"Receive with two hands","body":"Business cards, payment trays, gifts — accept with both hands and a small bow."}],"facts":[{"category":"Sakura","fact":"Cherry blossoms only bloom for 7–10 days, then fall. The brevity is celebrated as a metaphor for life — mono no aware."},{"category":"Sakura","fact":"Japan's official sakura forecast (sakura zensen) is tracked nationally on TV like the weather."},{"category":"Sakura","fact":"Ueno Park has over 1,000 cherry trees. The custom of hanami (flower viewing) dates back to the 8th century."},{"category":"Sakura","fact":"The Somei-Yoshino is the most common variety in Japan — and almost every tree is a clone of one tree planted in Edo in the 1800s."},{"category":"Trains","fact":"The Shinkansen has an average delay of 36 seconds per year. If it's more than 60 seconds late, you get a written apology."},{"category":"Trains","fact":"Tokyo Station has 28 platforms and over 4,000 trains per day."},{"category":"Trains","fact":"Don't take Nozomi shinkansen — JR Pass doesn't cover it. Use Hikari (same line, 1–2 stops more, same comfort)."},{"category":"Tokyo","fact":"Tokyo has more Michelin stars than any city in the world — 263 starred restaurants vs Paris' 119."},{"category":"Tokyo","fact":"Shibuya Crossing handles up to 3,000 people per light cycle — the busiest pedestrian crossing on Earth."},{"category":"Tokyo","fact":"Park Hotel Tokyo's 'Artist Rooms' are each painted by a different artist — yours will be unique."},{"category":"Kyoto","fact":"Kyoto has over 1,600 Buddhist temples and 400 Shinto shrines packed into 32 km²."},{"category":"Kyoto","fact":"Fushimi Inari's 10,000 torii gates were each donated by a business or individual — costs range from £400 to £8,000."},{"category":"Kyoto","fact":"The Philosopher's Path is named after Nishida Kitaro, a 20th-century philosopher who walked it daily to meditate."},{"category":"Osaka","fact":"Osaka's motto is 'kuidaore' — eat until you drop. Locals spend more on food than any other Japanese city."},{"category":"Osaka","fact":"Takoyaki (octopus balls) was invented in Osaka in 1935."},{"category":"Mt Fuji","fact":"Mt Fuji last erupted in 1707 — and is still classified as active. The 'Hoei eruption' lasted 16 days and dropped ash on Tokyo."},{"category":"Mt Fuji","fact":"Fuji is 'shy' — clouds obscure it 75% of the time. Mornings before 9am give your best chance of a clear view."},{"category":"Mt Fuji","fact":"Chureito Pagoda was built in 1963 as a peace memorial — and accidentally became the most photographed view in Japan."},{"category":"Thailand","fact":"Songkran (13–15 April) marks Thai New Year. The water fights symbolise washing away the past year."},{"category":"Thailand","fact":"Koh Samui means 'Safe Haven' — and was largely uninhabited until the 1970s."},{"category":"Thailand","fact":"Bangkok's full ceremonial name is the longest place name in the world — 168 characters in Thai."},{"category":"Modern","fact":"Japan has more vending machines per capita than anywhere on Earth — 1 per 23 people. They sell hot coffee, ramen, even umbrellas."},{"category":"Modern","fact":"There's a Ghibli train wrap on the Chuo Line. Tickets to the Ghibli Museum (Mitaka) sell out in minutes — released 10th of each month at 10am JST."},{"category":"Culture","fact":"Slurping noodles is polite — it shows you're enjoying the food and cools them as you eat."},{"category":"Culture","fact":"Wagashi — Japanese sweets — are designed to reflect the season. In spring, sakura-shaped sweets are everywhere."}],"packingList":{"Documents":["Passports (6+ months validity)","BA boarding passes","JR Pass voucher","Travel insurance","Hotel confirmations (offline)","Driver's licence (ID)"],"Electronics":["Phone + charger","Power bank","Type A/B adapter (Japan)","Type C/G adapter (Thailand)","Camera + spare battery","Waterproof phone pouch (Songkran!)"],"Tokyo / Cool Weather":["Light jacket","Layers (March-April 8-15°C)","Comfortable walking shoes","Umbrella"],"Samui / Hot Weather":["Swimwear x2","Sun cream SPF 50","Sunglasses","Hat","Light linen shirts","Flip flops"],"Misc":["Reusable water bottle","Tissue packs (Japan toilets often lack paper)","Hand sanitiser","Cash (¥20,000+ on arrival)","Eye mask + earplugs (flights)"]},"reminders":[{"date":"2026-10-19","title":"Book SEEN Restaurant","detail":"Avani+ Bangkok · 13 Apr Songkran dinner · 2 pax · 6-month booking window opens today"},{"date":"2027-01-04","title":"Buy 7-day JR Pass","detail":"JRailPass.com or Klook · ~£280pp · activate 1 Apr 2027"},{"date":"2027-02-10","title":"Ghibli Museum tickets release","detail":"01:00 GMT (10:00 JST) · Lawson Ticket / Klook / Voyagin · ¥1,000pp · for visit Mar 30"},{"date":"2027-03-23","title":"Re-check Avani+ pricing","detail":"Refundable until 11 Apr — cancel & rebook if cheaper"}],"jrPass":{"covered":["All JR shinkansen except Nozomi/Mizuho (use Hikari/Sakura)","Tokyo: Yamanote Line, Chuo Line","Narita Express (N'EX)","JR Osaka Loop Line","JR routes Kyoto ↔ Osaka ↔ Nara"],"notCovered":["Tokyo Metro & Toei subway (use Suica IC card)","Kyoto buses (cash or Suica)","Osaka Metro (Suica)","Fujikyu Line Otsuki → Kawaguchiko (~£5.50pp each way)","Keikyu Line to/from Haneda (use Monorail instead — but Monorail not JR either; use Suica)"],"tip":"Pair JR Pass with a Suica IC card. Activate the JR Pass on 1 Apr morning — it covers your entire Fuji/Kyoto/Osaka/return-to-Tokyo run, and expires on Day 7 (9 Apr)."},"bloomTracker":{"tokyo":{"forecast":"28 Mar – 4 Apr","peak":"30 Mar – 2 Apr"},"fuji":{"forecast":"5 Apr – 12 Apr","peak":"8 Apr – 11 Apr"},"kyoto":{"forecast":"30 Mar – 6 Apr","peak":"1 Apr – 5 Apr"},"osaka":{"forecast":"30 Mar – 6 Apr","peak":"1 Apr – 5 Apr"}}};
+
+// ==================== HELPERS ====================
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+function fmt(n) { return '£' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+const EVENT_ICONS = {
+  flight: '✈',
+  train: '🚄',
+  hotel: '🏨',
+  food: '🍜',
+  activity: '🎌',
+  hanami: '🌸',
+  arrive: '🛬',
+  transit: '🚌',
+  beach: '🏖',
+  songkran: '💧',
+};
+const DAY_ICONS = {
+  plane: '✈️',
+  sakura: '🌸',
+  mountain: '🗻',
+  torii: '⛩️',
+  food: '🍣',
+  ghibli: '🎨',
+  beach: '🏝️',
+  songkran: '💦',
+};
+const CITY_COLORS = {
+  tokyo: 'var(--sakura)',
+  kyoto: 'var(--sakura-dark)',
+  fuji: 'var(--sage)',
+  osaka: 'var(--gold)',
+  samui: 'var(--gold)',
+  bangkok: 'var(--gold)',
+  transit: 'var(--ink3)',
+};
+
+function getEventIcon(e) { return EVENT_ICONS[e.type] || EVENT_ICONS[e.icon] || '•'; }
+
+// Bloom tracker
+const BLOOM = TRIP_DATA.bloomTracker;
+function isInBloom(dateStr, city) {
+  if (!BLOOM[city]) return false;
+  const [startStr, endStr] = BLOOM[city].peak.split(' – ');
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  function parseBloomDate(s) {
+    const parts = s.trim().split(' ');
+    const day = parseInt(parts[0]);
+    const mo = months[parts[1]];
+    return new Date(2027, mo, day);
+  }
+  const d = new Date(dateStr);
+  return d >= parseBloomDate(startStr) && d <= parseBloomDate(endStr);
+}
+function isInForecast(dateStr, city) {
+  if (!BLOOM[city]) return false;
+  const [startStr, endStr] = BLOOM[city].forecast.split(' – ');
+  const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:11};
+  function parseBloomDate(s) {
+    const parts = s.trim().split(' ');
+    const day = parseInt(parts[0]);
+    const m = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const mo = m[parts[1]];
+    return new Date(2027, mo, day);
+  }
+  const d = new Date(dateStr);
+  return d >= parseBloomDate(startStr) && d <= parseBloomDate(endStr);
+}
+
+// Toast
+let toastTimer;
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), 2000);
+}
+
+// Copy
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('Copied: ' + text.slice(0,20) + (text.length > 20 ? '…' : ''));
+  } catch(e) {
+    showToast('Copy: ' + text);
+  }
+}
+
+// ==================== TAB NAVIGATION ====================
+function activateTab(tabName) {
+  $$('.tab-page').forEach(p => p.classList.remove('active'));
+  $$('.nav-btn, #desktop-nav button').forEach(b => b.classList.remove('active'));
+  const page = $(`#tab-${tabName}`);
+  if (page) page.classList.add('active');
+  $$(`[data-tab="${tabName}"]`).forEach(b => b.classList.add('active'));
+}
+
+$$('[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+});
+
+// ==================== DARK MODE ====================
+const darkBtn = $('#dark-toggle');
+let dark = false;
+darkBtn.addEventListener('click', () => {
+  dark = !dark;
+  document.body.classList.toggle('dark', dark);
+  darkBtn.textContent = dark ? '🌙' : '☀️';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#18130F' : '#FBF7F4');
+});
+
+// ==================== COUNTDOWN ====================
+function updateCountdown() {
+  const departure = new Date('2027-03-27T09:05:00+01:00'); // BST = UTC+1
+  const now = new Date();
+  const diff = departure - now;
+  const el = $('#countdown-num');
+  const sub = $('#countdown-sub');
+  if (!el) return;
+  if (diff <= 0) {
+    el.textContent = 'En route!';
+    sub.textContent = 'Trip is underway';
+  } else {
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+    el.textContent = days.toLocaleString();
+    sub.textContent = `days · ${hours}h ${mins}m remaining · BA0007`;
+  }
+}
+updateCountdown();
+setInterval(updateCountdown, 60000);
+
+// ==================== TODAY CARD ====================
+function buildTodayCard() {
+  const container = $('#today-card');
+  if (!container) return;
+  const todayStr = new Date().toISOString().split('T')[0];
+  const day = TRIP_DATA.days.find(d => d.date === todayStr);
+  
+  if (!day) {
+    // Pre or post trip
+    const departure = new Date('2027-03-27T09:05:00+01:00');
+    const now = new Date();
+    const diff = Math.floor((departure - now) / (1000*60*60*24));
+    const cityColor = 'var(--sakura)';
+    
+    container.innerHTML = `
+      <div class="today-header">
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">
+            ${diff > 0 ? `Day 1 starts in ${diff} day${diff !== 1 ? 's' : ''}` : 'Trip complete · Welcome home!'}
+          </div>
+          <div style="font-size:12px;color:var(--ink3);margin-top:3px">
+            ${diff > 0 ? 'Departure: Sat 27 Mar 2027, 09:05 BST' : 'Hope you had an incredible trip!'}
+          </div>
+        </div>
+        <span style="font-size:24px">🌸</span>
+      </div>
+      <div class="today-events">
+        <div class="today-event" style="flex-direction:column;align-items:flex-start">
+          <div style="font-size:13px;color:var(--ink3);line-height:1.5">
+            ${diff > 0 ? 'Nothing to show yet. Once the trip begins, today\'s schedule will appear here automatically.' : 'All 20 days complete. Sayonara!'}
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+  
+  const cityColor = CITY_COLORS[day.city] || 'var(--ink3)';
+  const bloom = isInBloom(day.date, day.city);
+  
+  container.innerHTML = `
+    <div class="today-header">
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-size:15px;font-weight:500;color:var(--ink)">Day ${day.id} · ${day.dateLabel}</div>
+          ${bloom ? '<span class="bloom-badge">🌸 Peak bloom</span>' : ''}
+        </div>
+        <div style="font-size:13px;color:var(--ink3);margin-top:2px">${day.location}</div>
+      </div>
+      <span class="today-city-badge" style="background:${cityColor}20;color:${cityColor}">${day.city.toUpperCase()}</span>
+    </div>
+    <div class="today-events">
+      ${day.events.map(ev => `
+        <div class="today-event">
+          <div class="event-time">${ev.time}</div>
+          <div class="event-icon">${getEventIcon(ev)}</div>
+          <div class="event-body">
+            <div class="event-title">${ev.title}</div>
+            ${ev.detail ? `<div class="event-detail">${ev.detail}</div>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+buildTodayCard();
+
+// ==================== ITINERARY ====================
+function buildItinerary() {
+  const list = $('#itinerary-list');
+  if (!list) return;
+  const todayStr = new Date().toISOString().split('T')[0];
+  
+  list.innerHTML = TRIP_DATA.days.map(day => {
+    const isToday = day.date === todayStr;
+    const cityColor = CITY_COLORS[day.city] || 'var(--ink3)';
+    const bloom = isInBloom(day.date, day.city);
+    const forecast = isInForecast(day.date, day.city);
+    const hasBlossom = bloom || forecast;
+    
+    const events = day.events.map(ev => `
+      <div class="today-event">
+        <div class="event-time">${ev.time}</div>
+        <div class="event-icon">${getEventIcon(ev)}</div>
+        <div class="event-body">
+          <div class="event-title">${ev.title}</div>
+          ${ev.detail ? `<div class="event-detail">${ev.detail}</div>` : ''}
+        </div>
+      </div>`).join('');
+    
+    return `
+      <div class="day-card city-${day.city}${isToday ? ' today-active' : ''}" data-day="${day.id}">
+        <div class="day-card-header" role="button" tabindex="0" aria-expanded="false">
+          <div class="day-num">D${day.id}</div>
+          <div class="day-icon">${DAY_ICONS[day.icon] || '📍'}</div>
+          <div class="day-info">
+            <div class="day-location">
+              ${day.location}
+              ${isToday ? '<span class="bloom-badge" style="background:rgba(26,22,20,0.08);color:var(--ink)">Today</span>' : ''}
+              ${hasBlossom && day.city !== 'transit' ? `<span class="bloom-badge">${bloom ? '🌸 Peak' : '🌷 Forecast'}</span>` : ''}
+            </div>
+            <div class="day-summary">${day.summary}</div>
+          </div>
+          <div class="day-date-label">${day.dateLabel.split(' ').slice(0,2).join(' ')}</div>
+          <div class="day-chevron">▾</div>
+        </div>
+        <div class="day-body">
+          <div class="day-events-inner">${events}</div>
+        </div>
+      </div>`;
+  }).join('');
+  
+  // Toggle expand
+  $$('.day-card-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const card = h.closest('.day-card');
+      const isOpen = card.classList.contains('open');
+      card.classList.toggle('open', !isOpen);
+      h.setAttribute('aria-expanded', !isOpen);
+    });
+    h.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); h.click(); }
+    });
+  });
+  
+  // Auto-open today
+  const todayCard = $('[data-day]', list) && $$('.day-card').find(c => c.classList.contains('today-active'));
+  if (todayCard) {
+    todayCard.classList.add('open');
+    $('[aria-expanded]', todayCard)?.setAttribute('aria-expanded', 'true');
+  }
+}
+buildItinerary();
+
+// ==================== BOOKINGS ====================
+function buildBookings() {
+  const catIcon = { flight: '✈', hotel: '🏨' };
+  
+  // Official site URLs — hotels only (flights are managed via booking platforms, not airline sites)
+  const BOOKING_URLS = {
+    'park-tokyo': 'https://www.parkhoteltokyo.com/en/',
+    'fuji-view': 'https://www.fujiview.jp/en/',
+    'rc-kyoto': 'https://rc-hotels.com/kyoto/',
+    'centara-osaka': 'https://www.centarahotelsresorts.com/centaragrand/cgos/',
+    'grand-prince': 'https://www.princehotels.com/takanawa/',
+    'sala-samui': 'https://www.salahospitality.com/samui/',
+    'avani-bkk': 'https://www.avanihotels.com/en/riverside-bangkok'
+  };
+  
+  function legMarkup(leg) {
+    if (leg.layover) {
+      return `<div class="flight-layover">${leg.layover}</div>`;
+    }
+    return `
+      <div class="flight-leg">
+        <div class="leg-rail">
+          <div class="leg-dot"></div>
+          <div class="leg-line"></div>
+          <div class="leg-dot end"></div>
+        </div>
+        <div class="leg-content">
+          <div class="leg-flight-no">${leg.flight} · ${leg.duration}</div>
+          <div class="leg-row"><div class="leg-time">${leg.depart}</div><div class="leg-place">${leg.from}</div></div>
+          <div class="leg-row"><div class="leg-time">${leg.arrive}</div><div class="leg-place">${leg.to}</div></div>
+          ${leg.cabin ? `<div class="leg-meta"><span class="leg-meta-pill">✨ ${leg.cabin}</span></div>` : ''}
+        </div>
+      </div>`;
+  }
+  
+  function bookingCard(b) {
+    const isCopyable = b.ref && b.ref !== '—';
+    const url = BOOKING_URLS[b.id];
+    const nameMarkup = url
+      ? `<a class="booking-name booking-name-link" href="${url}" target="_blank" rel="noopener noreferrer" data-url="${url}">${b.name}<span class="booking-ext" aria-hidden="true">↗</span></a>`
+      : `<div class="booking-name">${b.name}</div>`;
+    const legsMarkup = (b.legs && b.legs.length)
+      ? `<div class="booking-legs">${b.legs.map(legMarkup).join('')}</div>`
+      : '';
+    return `
+      <div class="booking-card">
+        <div class="booking-header">
+          <div class="booking-icon">${catIcon[b.category] || '📋'}</div>
+          <div class="booking-body">
+            ${nameMarkup}
+            <div class="booking-detail">${b.detail}</div>
+          </div>
+          <div class="booking-cost">${fmt(b.costGBP)}</div>
+        </div>
+        ${legsMarkup}
+        <div class="booking-footer">
+          <span class="booking-via">${b.bookedVia}</span>
+          ${isCopyable ? `<button class="booking-ref" data-ref="${b.ref}" title="Tap to copy">📋 ${b.ref}</button>` : `<span class="booking-via" style="margin-left:auto;opacity:0.5">${b.ref}</span>`}
+        </div>
+      </div>`;
+  }
+  
+  const flights = TRIP_DATA.bookings.filter(b => b.category === 'flight');
+  const hotels = TRIP_DATA.bookings.filter(b => b.category === 'hotel');
+  
+  $('#bookings-flights').innerHTML = flights.map(bookingCard).join('');
+  $('#bookings-hotels').innerHTML = hotels.map(bookingCard).join('');
+  
+  // Copy refs
+  $$('.booking-ref').forEach(btn => {
+    btn.addEventListener('click', () => copyText(btn.dataset.ref));
+  });
+  
+  // Force hotel links to open in a new tab via window.open (more reliable inside embedded/iframed views)
+  $$('.booking-name-link').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const u = a.getAttribute('data-url') || a.href;
+      if (!u) return;
+      e.preventDefault();
+      window.open(u, '_blank', 'noopener,noreferrer');
+    });
+  });
+}
+buildBookings();
+
+// ==================== COSTS ---- ====================
+function buildCosts() {
+  const sorted = [...TRIP_DATA.bookings].sort((a,b) => b.costGBP - a.costGBP);
+  const total = TRIP_DATA.trip.totalCostGBP;
+  const flightTotal = TRIP_DATA.bookings.filter(b=>b.category==='flight').reduce((s,b)=>s+b.costGBP,0);
+  const hotelTotal = TRIP_DATA.bookings.filter(b=>b.category==='hotel').reduce((s,b)=>s+b.costGBP,0);
+  const maxCost = sorted[0].costGBP;
+  
+  // SVG Donut
+  const r = 68, cx = 80, cy = 80, stroke = 22;
+  const circ = 2 * Math.PI * r;
+  const flightPct = flightTotal / total;
+  const hotelPct = hotelTotal / total;
+  const flightDash = circ * flightPct;
+  const hotelDash = circ * hotelPct;
+  const gapDash = circ - flightDash - hotelDash;
+  // Start at top (-90deg = -PI/2)
+  const startAngle = -Math.PI / 2;
+  const flightEnd = startAngle + 2 * Math.PI * flightPct;
+  
+  function polarOffset(angle, c, rad) {
+    return { x: c + rad * Math.cos(angle), y: c + rad * Math.sin(angle) };
+  }
+  
+  const donutSvg = `
+    <svg width="160" height="160" viewBox="0 0 160 160" style="overflow:visible">
+      <!-- Background circle -->
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/>
+      <!-- Flights segment -->
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" 
+        stroke="var(--sakura-dark)" stroke-width="${stroke}"
+        stroke-dasharray="${flightDash} ${circ - flightDash}"
+        stroke-dashoffset="${circ * 0.25}"
+        transform="rotate(-90 ${cx} ${cy})"/>
+      <!-- Hotels segment -->
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" 
+        stroke="var(--gold)" stroke-width="${stroke}"
+        stroke-dasharray="${hotelDash} ${circ - hotelDash}"
+        stroke-dashoffset="${circ * 0.25 - flightDash}"
+        transform="rotate(-90 ${cx} ${cy})"/>
+      <!-- Center text -->
+      <text x="${cx}" y="${cy - 6}" text-anchor="middle" font-family="var(--font-display)" font-size="14" fill="var(--ink)" font-style="italic">Total</text>
+      <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="var(--font-body)" font-size="13" fill="var(--ink)" font-weight="600">£6,302</text>
+    </svg>`;
+  
+  $('#donut-wrap').innerHTML = `
+    ${donutSvg}
+    <div class="donut-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--sakura-dark)"></div>Flights · ${fmt(flightTotal)} (${Math.round(flightPct*100)}%)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Hotels · ${fmt(hotelTotal)} (${Math.round(hotelPct*100)}%)</div>
+    </div>`;
+  
+  // Cost list
+  $('#cost-list').innerHTML = sorted.map(b => {
+    const pct = (b.costGBP / maxCost) * 100;
+    const color = b.category === 'flight' ? 'var(--sakura-dark)' : 'var(--gold)';
+    return `
+      <div class="cost-item">
+        <div class="cost-name" style="font-size:13px;color:var(--ink2)">${b.name.length > 28 ? b.name.slice(0,26)+'…' : b.name}</div>
+        <div class="cost-bar-bg"><div class="cost-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="cost-amount">${fmt(b.costGBP)}</div>
+      </div>`;
+  }).join('');
+}
+buildCosts();
+
+// ==================== PHRASES ====================
+function buildPhrases() {
+  const speechSupported = 'speechSynthesis' in window;
+  const tabs = $('#phrase-tabs');
+  const panels = $('#phrase-panels');
+  
+  TRIP_DATA.phrases.forEach((cat, i) => {
+    const tabBtn = document.createElement('button');
+    tabBtn.className = 'phrase-tab' + (i === 0 ? ' active' : '');
+    tabBtn.textContent = cat.category;
+    tabBtn.dataset.phraseTab = i;
+    tabs.appendChild(tabBtn);
+    
+    const panel = document.createElement('div');
+    panel.className = 'phrase-panel' + (i === 0 ? ' active' : '');
+    panel.dataset.phrasePanel = i;
+    
+    panel.innerHTML = cat.items.map((p, j) => `
+      <div class="phrase-card" data-phrase-idx="${j}" data-cat="${i}">
+        <div class="phrase-main">
+          <div class="phrase-en">${p.en}</div>
+          <div class="phrase-jp">${p.jp}</div>
+          <div class="phrase-phon">${p.phon}</div>
+        </div>
+        ${speechSupported ? `<button class="speak-btn" data-speak="${p.en}" title="Speak">🔊</button>` : ''}
+      </div>`).join('');
+    
+    panels.appendChild(panel);
+  });
+  
+  // Tab switching
+  $$('.phrase-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.phrase-tab').forEach(b => b.classList.remove('active'));
+      $$('.phrase-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      $(`[data-phrase-panel="${btn.dataset.phraseTab}"]`).classList.add('active');
+    });
+  });
+  
+  // Phrase tap (highlight + copy)
+  document.addEventListener('click', e => {
+    const card = e.target.closest('.phrase-card');
+    if (!card || e.target.closest('.speak-btn')) return;
+    $$('.phrase-card').forEach(c => c.classList.remove('highlighted'));
+    card.classList.add('highlighted');
+    const jp = card.querySelector('.phrase-jp')?.textContent;
+    if (jp) copyText(jp);
+  });
+  
+  // Speak button
+  if (speechSupported) {
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.speak-btn');
+      if (!btn) return;
+      e.stopPropagation();
+      const utter = new SpeechSynthesisUtterance(btn.dataset.speak);
+      utter.lang = 'en-US';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+      showToast('Speaking: ' + btn.dataset.speak);
+    });
+  }
+}
+buildPhrases();
+
+// ==================== TIPS ====================
+function buildTips() {
+  // Etiquette
+  $('#etiquette-list').innerHTML = TRIP_DATA.etiquette.map(e => `
+    <div class="etiquette-card">
+      <div class="etiquette-title">${e.title}</div>
+      <div class="etiquette-body">${e.body}</div>
+    </div>`).join('');
+  
+  // JR Pass
+  $('#jr-covered').innerHTML = TRIP_DATA.jrPass.covered.map(s => `<div class="jr-item">${s}</div>`).join('');
+  $('#jr-not-covered').innerHTML = TRIP_DATA.jrPass.notCovered.map(s => `<div class="jr-item">${s}</div>`).join('');
+  $('#jr-tip').textContent = TRIP_DATA.jrPass.tip;
+  
+  // Facts carousel
+  let factIdx = 0;
+  function showFact(idx) {
+    const f = TRIP_DATA.facts[idx];
+    $('#fact-card').innerHTML = `
+      <div class="fact-category">${f.category}</div>
+      <div class="fact-text">${f.fact}</div>`;
+    $('#fact-counter').textContent = `${idx + 1} of ${TRIP_DATA.facts.length}`;
+  }
+  showFact(0);
+  $('#fact-next').addEventListener('click', () => {
+    factIdx = (factIdx + 1) % TRIP_DATA.facts.length;
+    showFact(factIdx);
+  });
+}
+buildTips();
+
+// ==================== PACKING ====================
+function buildPacking() {
+  const list = $('#packing-list');
+  const checked = {};
+  
+  function renderPacking() {
+    list.innerHTML = '';
+    let total = 0, done = 0;
+    
+    Object.entries(TRIP_DATA.packingList).forEach(([cat, items]) => {
+      const section = document.createElement('div');
+      section.className = 'packing-section';
+      section.innerHTML = `<div class="packing-cat-title">${cat}</div>`;
+      
+      items.forEach(item => {
+        total++;
+        const key = cat + '::' + item;
+        const isChecked = checked[key];
+        if (isChecked) done++;
+        
+        const div = document.createElement('div');
+        div.className = 'pack-item' + (isChecked ? ' checked' : '');
+        div.innerHTML = `
+          <div class="pack-checkbox">${isChecked ? '✓' : ''}</div>
+          <div class="pack-label">${item}</div>`;
+        div.addEventListener('click', () => {
+          checked[key] = !checked[key];
+          renderPacking();
+        });
+        section.appendChild(div);
+      });
+      list.appendChild(section);
+    });
+    
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    $('#progress-text').textContent = `${done} / ${total} packed`;
+    $('#progress-pct').textContent = `${pct}%`;
+    $('#progress-bar').style.width = pct + '%';
+  }
+  
+  renderPacking();
+}
+buildPacking();
+
+// ==================== REMINDERS ====================
+function buildReminders() {
+  const now = new Date();
+  const container = $('#reminders-list');
+  
+  container.innerHTML = TRIP_DATA.reminders.map(r => {
+    const rDate = new Date(r.date);
+    const diff = Math.ceil((rDate - now) / (1000*60*60*24));
+    const past = diff < 0;
+    const daysLabel = past ? `${Math.abs(diff)}d ago` : diff === 0 ? 'Today' : `${diff}d`;
+    
+    return `
+      <div class="reminder-card">
+        <div class="reminder-days">
+          <div class="reminder-days-num" style="color:${past ? 'var(--ink3)' : 'var(--sakura-dark)'}">${daysLabel}</div>
+          <div class="reminder-days-lbl">${past ? 'passed' : 'until'}</div>
+        </div>
+        <div class="reminder-body">
+          <div class="reminder-date">${rDate.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})}</div>
+          <div class="reminder-title">${r.title}</div>
+          <div class="reminder-detail">${r.detail}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+buildReminders();
+
+// ==================== MAP ====================
+const MAP_STOPS = [
+  { id: 'tokyo1', name: 'Tokyo', sub: 'Park Hotel · Shiodome', dates: '28 Mar – 1 Apr', nights: 4, lat: 35.6654, lng: 139.7610, color: '#E8A0BF', order: 1 },
+  { id: 'fuji', name: 'Kawaguchiko', sub: 'Fuji View Hotel', dates: '1 – 3 Apr', nights: 2, lat: 35.5104, lng: 138.7530, color: '#7A8B7F', order: 2 },
+  { id: 'kyoto', name: 'Kyoto', sub: 'RC Hotel Kyoto', dates: '3 – 6 Apr', nights: 3, lat: 35.0116, lng: 135.7681, color: '#C97096', order: 3 },
+  { id: 'osaka', name: 'Osaka', sub: 'Centara Grand · Miyabi Floor', dates: '6 – 9 Apr', nights: 3, lat: 34.6937, lng: 135.5023, color: '#C9A961', order: 4 },
+  { id: 'tokyo2', name: 'Tokyo', sub: 'Grand Prince Takanawa', dates: '9 Apr', nights: 1, lat: 35.6354, lng: 139.7384, color: '#E8A0BF', order: 5 },
+  { id: 'samui', name: 'Koh Samui', sub: 'Sala Samui Choengmon', dates: '10 – 13 Apr', nights: 3, lat: 9.5613, lng: 100.0530, color: '#5BA3C7', order: 6 },
+  { id: 'bkk', name: 'Bangkok', sub: 'Avani+ Riverside · Songkran', dates: '13 – 14 Apr', nights: 1, lat: 13.7236, lng: 100.5118, color: '#D4854A', order: 7 }
+];
+
+let mapInstance = null;
+let mapMarkers = {};
+
+function initMap() {
+  if (mapInstance || typeof L === 'undefined') return;
+  const mapEl = $('#map');
+  if (!mapEl) return;
+  
+  mapInstance = L.map('map', {
+    center: [25, 125],
+    zoom: 4,
+    scrollWheelZoom: false,
+    zoomControl: true
+  });
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '\u00a9 OpenStreetMap',
+    maxZoom: 18
+  }).addTo(mapInstance);
+  
+  // Add markers
+  MAP_STOPS.forEach(stop => {
+    const icon = L.divIcon({
+      className: 'trip-marker',
+      html: `<div class="trip-marker-pin" style="background:${stop.color}"><span>${stop.order}</span></div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+    const marker = L.marker([stop.lat, stop.lng], { icon }).addTo(mapInstance);
+    marker.bindPopup(`<strong>${stop.name}</strong><br>${stop.sub}<br><span style="color:#888">${stop.dates} · ${stop.nights} night${stop.nights !== 1 ? 's' : ''}</span>`);
+    mapMarkers[stop.id] = marker;
+  });
+  
+  // Polyline connecting stops in order
+  const linePoints = MAP_STOPS.map(s => [s.lat, s.lng]);
+  L.polyline(linePoints, {
+    color: '#E8A0BF',
+    weight: 2,
+    opacity: 0.6,
+    dashArray: '6, 8'
+  }).addTo(mapInstance);
+  
+  // Fit bounds
+  const bounds = L.latLngBounds(linePoints);
+  mapInstance.fitBounds(bounds, { padding: [40, 40] });
+}
+
+function buildMapStops() {
+  const container = $('#map-stops');
+  if (!container) return;
+  container.innerHTML = MAP_STOPS.map(stop => `
+    <div class="map-stop" data-stop="${stop.id}">
+      <div class="map-stop-dot" style="background:${stop.color}">${stop.order}</div>
+      <div class="map-stop-body">
+        <div class="map-stop-name">${stop.name}</div>
+        <div class="map-stop-meta">${stop.sub} · ${stop.dates}</div>
+      </div>
+      <div class="map-stop-nights">${stop.nights}n</div>
+    </div>
+  `).join('');
+  
+  $$('.map-stop').forEach(el => {
+    el.addEventListener('click', () => {
+      const stopId = el.dataset.stop;
+      const stop = MAP_STOPS.find(s => s.id === stopId);
+      if (stop && mapInstance) {
+        mapInstance.flyTo([stop.lat, stop.lng], 10, { duration: 1.2 });
+        if (mapMarkers[stopId]) mapMarkers[stopId].openPopup();
+        $('#map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+}
+
+buildMapStops();
+
+// Lazy-init map on first tab activation (so Leaflet sizes correctly)
+const origSwitchTab = window.switchTab;
+function switchTabWithMap(name) {
+  if (typeof origSwitchTab === 'function') origSwitchTab(name);
+  if (name === 'map') {
+    setTimeout(() => {
+      initMap();
+      if (mapInstance) mapInstance.invalidateSize();
+    }, 100);
+  }
+}
+// Hook into existing tab clicks
+$$('[data-tab="map"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setTimeout(() => {
+      initMap();
+      if (mapInstance) mapInstance.invalidateSize();
+    }, 150);
+  });
+});
+
+</script>
+</body>
+</html>
