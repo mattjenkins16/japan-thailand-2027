@@ -1779,9 +1779,11 @@ function initMap() {
     zoomControl: true
   });
   
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '\u00a9 OpenStreetMap',
-    maxZoom: 18
+  // CARTO Voyager tiles render place names in Latin/English script (transliterated)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '\u00a9 OpenStreetMap \u00a9 CARTO',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(mapInstance);
   
   // Add markers
