@@ -206,6 +206,23 @@ body {
 }
 .card + .card { margin-top: 10px; }
 
+
+/* ---- CURRENCY CONVERTER ---- */
+.fx-section { padding: 0 16px 24px; }
+@media (min-width: 480px) { .fx-section { padding: 0 24px 28px; } }
+.fx-card { background: var(--bg2); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
+.fx-row { display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 14px; transition: border-color var(--transition); }
+.fx-row:focus-within { border-color: var(--sakura-dark); }
+.fx-sym { font-family: var(--font-display); font-size: 22px; color: var(--sakura-dark); width: 22px; text-align: center; flex-shrink: 0; }
+.fx-row input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-family: var(--font-display); font-size: 24px; font-variant-numeric: tabular-nums; }
+.fx-code { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: var(--ink3); flex-shrink: 0; }
+.fx-swap { display: flex; justify-content: center; margin: -4px 0; position: relative; z-index: 1; }
+.fx-swap span { width: 28px; height: 28px; border-radius: 50%; background: var(--bg2); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink3); font-size: 14px; }
+.fx-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.fx-chip { border: 1px solid var(--line); background: var(--bg); color: var(--ink2); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-family: var(--font-body); cursor: pointer; font-variant-numeric: tabular-nums; }
+.fx-chip:active { background: var(--sakura); color: #fff; border-color: var(--sakura); }
+.fx-rate { margin-top: 12px; font-size: 12px; color: var(--ink3); line-height: 1.5; }
+
 /* ---- HOME PAGE ---- */
 #hero {
   padding: 28px 16px 20px;
@@ -978,6 +995,21 @@ body.dark .leaflet-popup-content-wrapper, body.dark .leaflet-popup-tip { backgro
       <div class="section-label">What's Happening Today</div>
       <div class="today-card" id="today-card"></div>
     </div>
+    <div class="fx-section">
+      <div class="section-label">Currency Converter</div>
+      <div class="fx-card">
+        <label class="fx-row"><span class="fx-sym">£</span><input id="fx-gbp" type="text" inputmode="decimal" autocomplete="off" aria-label="Amount in pounds" placeholder="0"><span class="fx-code">GBP</span></label>
+        <div class="fx-swap" aria-hidden="true"><span>⇅</span></div>
+        <label class="fx-row"><span class="fx-sym">¥</span><input id="fx-jpy" type="text" inputmode="numeric" autocomplete="off" aria-label="Amount in yen" placeholder="0"><span class="fx-code">JPY</span></label>
+        <div class="fx-chips" id="fx-chips">
+          <button class="fx-chip" data-jpy="1000">¥1,000</button>
+          <button class="fx-chip" data-jpy="5000">¥5,000</button>
+          <button class="fx-chip" data-jpy="10000">¥10,000</button>
+          <button class="fx-chip" data-gbp="50">£50</button>
+        </div>
+        <div class="fx-rate" id="fx-rate">Loading today's rate…</div>
+      </div>
+    </div>
   </div>
 
   <!-- ITINERARY -->
@@ -1272,6 +1304,56 @@ darkBtn.addEventListener('click', () => {
   darkBtn.textContent = dark ? '🌙' : '☀️';
   document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#18130F' : '#FBF7F4');
 });
+
+
+// ==================== CURRENCY CONVERTER ====================
+(function () {
+  const gbpEl = document.getElementById('fx-gbp');
+  const jpyEl = document.getElementById('fx-jpy');
+  const rateEl = document.getElementById('fx-rate');
+  if (!gbpEl) return;
+  const KEY = 'fx-gbp-jpy';
+  let rate = 208.6, updated = null, live = false;
+  try { const c = JSON.parse(localStorage.getItem(KEY)); if (c && c.rate) { rate = c.rate; updated = c.date; } } catch (e) {}
+
+  const parse = v => parseFloat(String(v).replace(/[^0-9.]/g, ''));
+  const fmtG = n => n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtJ = n => Math.round(n).toLocaleString('en-GB');
+  let last = 'gbp';
+
+  function fromGbp() { last = 'gbp'; const v = parse(gbpEl.value); jpyEl.value = isNaN(v) ? '' : fmtJ(v * rate); }
+  function fromJpy() { last = 'jpy'; const v = parse(jpyEl.value); gbpEl.value = isNaN(v) ? '' : fmtG(v / rate); }
+  function showRate() {
+    const d = updated ? new Date(updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+    rateEl.textContent = '£1 = ¥' + rate.toFixed(2) + ' · ¥1,000 = £' + fmtG(1000 / rate) +
+      (d ? (live ? ' · mid-market rate, updated ' + d : ' · saved rate from ' + d + ' (offline)') : ' · approximate rate (offline)');
+  }
+
+  gbpEl.addEventListener('input', fromGbp);
+  jpyEl.addEventListener('input', fromJpy);
+  gbpEl.addEventListener('blur', () => { const v = parse(gbpEl.value); if (!isNaN(v)) gbpEl.value = fmtG(v); });
+  jpyEl.addEventListener('blur', () => { const v = parse(jpyEl.value); if (!isNaN(v)) jpyEl.value = fmtJ(v); });
+  document.getElementById('fx-chips').addEventListener('click', e => {
+    const b = e.target.closest('.fx-chip'); if (!b) return;
+    if (b.dataset.jpy) { jpyEl.value = fmtJ(+b.dataset.jpy); fromJpy(); }
+    else { gbpEl.value = fmtG(+b.dataset.gbp); fromGbp(); }
+  });
+
+  gbpEl.value = fmtG(10); fromGbp(); showRate();
+
+  function apply(r, date) {
+    rate = r; updated = date; live = true;
+    try { localStorage.setItem(KEY, JSON.stringify({ rate: r, date })); } catch (e) {}
+    last === 'gbp' ? fromGbp() : fromJpy(); showRate();
+  }
+  fetch('https://open.er-api.com/v6/latest/GBP')
+    .then(r => r.json())
+    .then(d => { if (d.result === 'success' && d.rates.JPY) apply(d.rates.JPY, d.time_last_update_unix * 1000); else throw 0; })
+    .catch(() => fetch('https://api.frankfurter.dev/v1/latest?base=GBP&symbols=JPY')
+      .then(r => r.json())
+      .then(d => { if (d.rates && d.rates.JPY) apply(d.rates.JPY, d.date); })
+      .catch(() => {}));
+})();
 
 // ==================== COUNTDOWN ====================
 function updateCountdown() {
